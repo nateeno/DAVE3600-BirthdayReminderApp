@@ -4,9 +4,13 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.content.Context;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FriendsDataSource {
 
@@ -19,7 +23,7 @@ public class FriendsDataSource {
             DatabaseHelper.COLUMN_NAME, DatabaseHelper.COLUMN_PHONE,
             DatabaseHelper.COLUMN_BIRTHDAY };
 
-    public FriendsDataSource(MainActivity context) {
+    public FriendsDataSource(Context context) {
         dbHelper = new DatabaseHelper(context);
     }
 
@@ -88,5 +92,23 @@ public class FriendsDataSource {
         String[] selectionArgs = { String.valueOf(friend.getId()) };
 
         database.update(DatabaseHelper.TABLE_FRIENDS, values, selection, selectionArgs);
+    }
+
+    // Method to get friends with today's birthday
+    public List<Friend> getFriendsWithBirthdayToday() {
+        List<Friend> friendsWithBirthdayToday = new ArrayList<>();
+        String today = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+
+        Cursor cursor = database.query(DatabaseHelper.TABLE_FRIENDS,
+                allColumns, DatabaseHelper.COLUMN_BIRTHDAY + " = ?", new String[]{today}, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            Friend friend = cursorToFriend(cursor);
+            friendsWithBirthdayToday.add(friend);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return friendsWithBirthdayToday;
     }
 }
