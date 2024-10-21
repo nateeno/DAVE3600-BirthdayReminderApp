@@ -1,6 +1,7 @@
 package com.example.dave3600_2_s374923;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -76,6 +77,15 @@ public class MainActivity extends AppCompatActivity {
 
                     refreshRecyclerView();
                 }
+            }
+        });
+
+        Button settingsButton = findViewById(R.id.settings_button);
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
             }
         });
 
