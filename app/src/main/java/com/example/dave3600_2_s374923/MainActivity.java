@@ -1,8 +1,12 @@
 package com.example.dave3600_2_s374923;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -15,15 +19,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Calendar;
 import java.util.List;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_SEND_SMS = 1;
@@ -109,17 +110,20 @@ public class MainActivity extends AppCompatActivity {
 
     // Schedule a daily check for birthdays
     private void scheduleDailyBirthdayCheck() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String time = preferences.getString("sms_time", "08:00");
+        int hour = TimePickerPreference.getHour(time);
+        int minute = TimePickerPreference.getMinute(time);
+
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, BirthdayCheckReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-        // Set the alarm to start at approximately 8:00 a.m.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 8);
-        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
 
-        // With setInexactRepeating(), you have to use one of the AlarmManager interval constants
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendingIntent);
     }
@@ -138,26 +142,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Method to send an SMS using SmsManager
-    private void sendSms(String phoneNumber, String message) {
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-        Toast.makeText(this, "SMS sent successfully!", Toast.LENGTH_SHORT).show();
-    }
-
-    // Method to check for today's birthdays and send SMS
-    private void checkAndSendBirthdayMessages() {
-        List<Friend> friendsWithBirthdayToday = datasource.getFriendsWithBirthdayToday();
-        for (Friend friend : friendsWithBirthdayToday) {
-            String message = "Happy Birthday, " + friend.getName() + "!";
-            sendSms(friend.getPhone(), message);
-        }
-    }
-
     private void refreshRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.friends_recycler_view);
         List<Friend> friends = datasource.getAllFriends();
-        FriendsAdapter adapter = new FriendsAdapter(friends, datasource);  // Pass datasource to the adapter
+        FriendsAdapter adapter = new FriendsAdapter(friends, datasource);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

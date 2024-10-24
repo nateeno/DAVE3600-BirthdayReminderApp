@@ -1,0 +1,17 @@
+<!-- res/xml/preferences.xml -->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreferenceCompat
+        android:key="sms_service"
+        android:title="Enable SMS Service"
+        android:defaultValue="false" />
+
+    <com.example.dave3600_2_s374923.TimePickerPreference
+        android:key="sms_time"
+        android:title="SMS Time"
+        android:defaultValue="08:00" />
+
+    <EditTextPreference
+        android:key="sms_message"
+        android:title="Default SMS Message"
+        android:defaultValue="Happy Birthday!" />
+</PreferenceScreen>

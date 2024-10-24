@@ -17,6 +17,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"/>
 
-    <!-- Add more settings UI elements here -->
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/settings_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
