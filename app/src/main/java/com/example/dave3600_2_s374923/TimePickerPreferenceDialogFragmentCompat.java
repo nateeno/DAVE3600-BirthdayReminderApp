@@ -2,6 +2,7 @@ package com.example.dave3600_2_s374923;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TimePicker;
 import androidx.preference.PreferenceDialogFragmentCompat;
@@ -20,8 +21,11 @@ public class TimePickerPreferenceDialogFragmentCompat extends PreferenceDialogFr
 
     @Override
     protected View onCreateDialogView(Context context) {
-        timePicker = new TimePicker(context);
-        return timePicker;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_time_picker, null);
+        timePicker = view.findViewById(R.id.dialog_time_picker);
+        timePicker.setIs24HourView(true); // Ensure 24-hour view
+        return view;
     }
 
     @Override

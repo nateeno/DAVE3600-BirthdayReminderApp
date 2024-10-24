@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private FriendsDataSource datasource;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -126,6 +126,10 @@ public class MainActivity extends AppCompatActivity {
 
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        // For debugging, change interval to 5 minutes
+        // alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+        //        AlarmManager.INTERVAL_FIFTEEN_MINUTES / 3, pendingIntent);
     }
 
     @Override
@@ -152,13 +156,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        datasource.open();
         super.onResume();
+        if (datasource != null) {
+            datasource.open();
+        }
     }
 
     @Override
     protected void onPause() {
-        datasource.close();
         super.onPause();
+        if (datasource != null) {
+            datasource.close();
+        }
     }
 }

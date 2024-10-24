@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.telephony.SmsManager;
+import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -28,22 +29,31 @@ public class BirthdayCheckService extends IntentService {
         boolean isSmsServiceEnabled = preferences.getBoolean("sms_service", false);
         String defaultSmsMessage = preferences.getString("sms_message", "Happy Birthday!");
 
-        if (!isSmsServiceEnabled) return;
+        if (!isSmsServiceEnabled) {
+            Log.d("BirthdayCheckService", "SMS Service is disabled.");
+            return;
+        }
 
         FriendsDataSource datasource = new FriendsDataSource(this);
         datasource.open();
         List<Friend> friendsWithBirthdayToday = datasource.getFriendsWithBirthdayToday();
         for (Friend friend : friendsWithBirthdayToday) {
             String message = defaultSmsMessage.replace("{name}", friend.getName());
+            Log.d("BirthdayCheckService", "Sending SMS to: " + friend.getPhone() + " Message: " + message);
             sendSms(friend.getPhone(), message);
         }
         datasource.close();
     }
 
     private void sendSms(String phoneNumber, String message) {
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-        showNotification("SMS sent to " + phoneNumber);
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+            Log.d("BirthdayCheckService", "SMS sent successfully to " + phoneNumber);
+            showNotification("SMS sent to " + phoneNumber);
+        } catch (Exception e) {
+            Log.e("BirthdayCheckService", "Failed to send SMS to " + phoneNumber, e);
+        }
     }
 
     private void showNotification(String message) {
@@ -71,10 +81,12 @@ public class BirthdayCheckService extends IntentService {
                 Intent requestPermissionIntent = new Intent(this, PermissionRequestActivity.class);
                 requestPermissionIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(requestPermissionIntent);
+                Log.d("BirthdayCheckService", "Notification permission not granted. Requesting permission.");
                 return;
             }
         }
 
+        Log.d("BirthdayCheckService", "Showing notification: " + message);
         notificationManagerCompat.notify(1, builder.build());
     }
 }

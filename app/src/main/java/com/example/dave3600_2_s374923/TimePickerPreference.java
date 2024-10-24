@@ -20,6 +20,7 @@ public class TimePickerPreference extends DialogPreference {
         lastMinute = minute;
         String time = String.format("%02d:%02d", lastHour, lastMinute);
         persistString(time);
+        notifyChanged();
     }
 
     public int getHour() {
