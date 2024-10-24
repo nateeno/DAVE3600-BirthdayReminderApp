@@ -16,12 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
+
     private List<Friend> friends;
     private FriendsDataSource datasource;
+    private MainActivity mainActivity; // Add this line
 
-    public FriendsAdapter(List<Friend> friends, FriendsDataSource datasource) {
+    public FriendsAdapter(List<Friend> friends, FriendsDataSource datasource, MainActivity mainActivity) { // Modify constructor
         this.friends = friends;
         this.datasource = datasource;
+        this.mainActivity = mainActivity;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -95,6 +98,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
                         datasource.updateFriend(friend);
                         notifyItemChanged(position);
+                        mainActivity.refreshBirthdayTodayRecyclerView(); // Update the birthday list
                     }
                 });
 
@@ -112,6 +116,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 datasource.deleteFriend(friend);
                 friends.remove(position);
                 notifyItemRemoved(position);
+                mainActivity.refreshBirthdayTodayRecyclerView(); // Update the birthday list
             }
         });
     }

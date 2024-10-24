@@ -29,6 +29,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_SEND_SMS = 1;
     private FriendsDataSource datasource;
+    private BirthdayAdapter birthdayAdapter;
+    private FriendsAdapter friendsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     birthdayButton.setText("Birthday");
 
                     refreshRecyclerView();
+                    refreshBirthdayTodayRecyclerView();
                 }
             }
         });
@@ -105,7 +108,24 @@ public class MainActivity extends AppCompatActivity {
         });
 
         refreshRecyclerView();
+        refreshBirthdayTodayRecyclerView();
         scheduleDailyBirthdayCheck(); // Schedule the daily birthday check
+    }
+
+    private void refreshRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.friends_recycler_view);
+        List<Friend> friends = datasource.getAllFriends();
+        friendsAdapter = new FriendsAdapter(friends, datasource, this); // Pass the MainActivity instance
+        recyclerView.setAdapter(friendsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    void refreshBirthdayTodayRecyclerView() {
+        RecyclerView birthdayRecyclerView = findViewById(R.id.birthday_today_recycler_view);
+        List<Friend> friendsWithBirthdayToday = datasource.getFriendsWithBirthdayToday();
+        birthdayAdapter = new BirthdayAdapter(friendsWithBirthdayToday);
+        birthdayRecyclerView.setAdapter(birthdayAdapter);
+        birthdayRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     // Schedule a daily check for birthdays
@@ -146,20 +166,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void refreshRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.friends_recycler_view);
-        List<Friend> friends = datasource.getAllFriends();
-        FriendsAdapter adapter = new FriendsAdapter(friends, datasource);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
         if (datasource != null) {
             datasource.open();
         }
+        refreshRecyclerView();
+        refreshBirthdayTodayRecyclerView();
     }
 
     @Override
