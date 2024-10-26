@@ -25,6 +25,7 @@ public class BirthdayCheckService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.d("BirthdayCheckService", "Service started.");
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isSmsServiceEnabled = preferences.getBoolean("sms_service", false);
         String defaultSmsMessage = preferences.getString("sms_message", "Happy Birthday!");
@@ -43,6 +44,7 @@ public class BirthdayCheckService extends IntentService {
             sendSms(friend.getPhone(), message);
         }
         datasource.close();
+        Log.d("BirthdayCheckService", "Service completed.");
     }
 
     private void sendSms(String phoneNumber, String message) {

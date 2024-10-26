@@ -13,12 +13,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class FriendsDataSource {
-
-    // SQLiteDatabase and DatabaseHelper objects
     private SQLiteDatabase database;
     private DatabaseHelper dbHelper;
 
-    // Database fields
     private String[] allColumns = { DatabaseHelper.COLUMN_ID,
             DatabaseHelper.COLUMN_NAME, DatabaseHelper.COLUMN_PHONE,
             DatabaseHelper.COLUMN_BIRTHDAY };

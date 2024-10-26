@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -128,6 +129,20 @@ public class MainActivity extends AppCompatActivity {
         birthdayRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_SEND_SMS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, you can send SMS now
+                Toast.makeText(this, "SMS permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                // Permission denied, show a message
+                Toast.makeText(this, "SMS permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     // Schedule a daily check for birthdays
     private void scheduleDailyBirthdayCheck() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -144,26 +159,15 @@ public class MainActivity extends AppCompatActivity {
         calendar.set(Calendar.HOUR_OF_DAY, hour);
         calendar.set(Calendar.MINUTE, minute);
 
+        // For debugging, set interval to 1 minute
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pendingIntent);
+                AlarmManager.INTERVAL_FIFTEEN_MINUTES / 15, pendingIntent);
 
-        // For debugging, change interval to 5 minutes
+        // Original code for daily check
         // alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-        //        AlarmManager.INTERVAL_FIFTEEN_MINUTES / 3, pendingIntent);
-    }
+        //         AlarmManager.INTERVAL_DAY, pendingIntent);
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_REQUEST_SEND_SMS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, you can send SMS now
-                Toast.makeText(this, "SMS permission granted", Toast.LENGTH_SHORT).show();
-            } else {
-                // Permission denied, show a message
-                Toast.makeText(this, "SMS permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
+        //Log.d("MainActivity", "Alarm set for " + hour + ":" + minute + " with repeating interval of 1 minute for debugging.");
     }
 
     @Override
