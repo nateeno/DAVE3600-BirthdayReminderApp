@@ -23,7 +23,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     private MainActivity mainActivity;
 
     public FriendsAdapter(List<Friend> friends, FriendsDataSource datasource, MainActivity mainActivity) {
-        this.friends = friends != null ? friends : new ArrayList<>(); // Ensure friends is not null
+        this.friends = friends != null ? friends : new ArrayList<>();
         this.datasource = datasource;
         this.mainActivity = mainActivity;
     }
@@ -103,7 +103,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
                         datasource.updateFriend(friend);
                         notifyItemChanged(position);
-                        mainActivity.refreshBirthdayTodayRecyclerView(); // Update the birthday list
+                        mainActivity.refreshBirthdayTodayRecyclerView();
                     }
                 });
 
@@ -121,9 +121,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 datasource.deleteFriend(friend);
                 friends.remove(position);
                 notifyItemRemoved(position);
-                mainActivity.refreshBirthdayTodayRecyclerView(); // Update the birthday list
+                mainActivity.refreshBirthdayTodayRecyclerView();
 
-                // Notify the adapter of changes to the remaining items
                 notifyItemRangeChanged(position, getItemCount());
             }
         });

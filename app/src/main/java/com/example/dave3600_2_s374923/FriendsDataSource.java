@@ -65,7 +65,6 @@ public class FriendsDataSource {
             friends.add(friend);
             cursor.moveToNext();
         }
-        // close the cursor
         cursor.close();
         return friends;
     }

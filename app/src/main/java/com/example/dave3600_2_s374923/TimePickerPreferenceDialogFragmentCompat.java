@@ -24,7 +24,7 @@ public class TimePickerPreferenceDialogFragmentCompat extends PreferenceDialogFr
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_time_picker, null);
         timePicker = view.findViewById(R.id.dialog_time_picker);
-        timePicker.setIs24HourView(true); // Ensure 24-hour view
+        timePicker.setIs24HourView(true);
         return view;
     }
 
