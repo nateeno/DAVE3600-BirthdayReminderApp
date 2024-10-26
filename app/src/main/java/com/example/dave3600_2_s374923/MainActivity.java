@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
     private void refreshRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.friends_recycler_view);
         List<Friend> friends = datasource.getAllFriends();
-        friendsAdapter = new FriendsAdapter(friends, datasource, this); // Pass the MainActivity instance
+        friendsAdapter = new FriendsAdapter(friends, datasource, this);
         recyclerView.setAdapter(friendsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -166,8 +166,6 @@ public class MainActivity extends AppCompatActivity {
         // Original code for daily check
         // alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
         //         AlarmManager.INTERVAL_DAY, pendingIntent);
-
-        //Log.d("MainActivity", "Alarm set for " + hour + ":" + minute + " with repeating interval of 1 minute for debugging.");
     }
 
     @Override

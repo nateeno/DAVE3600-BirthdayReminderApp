@@ -13,16 +13,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
     private List<Friend> friends;
     private FriendsDataSource datasource;
-    private MainActivity mainActivity; // Add this line
+    private MainActivity mainActivity;
 
-    public FriendsAdapter(List<Friend> friends, FriendsDataSource datasource, MainActivity mainActivity) { // Modify constructor
-        this.friends = friends;
+    public FriendsAdapter(List<Friend> friends, FriendsDataSource datasource, MainActivity mainActivity) {
+        this.friends = friends != null ? friends : new ArrayList<>(); // Ensure friends is not null
         this.datasource = datasource;
         this.mainActivity = mainActivity;
     }
@@ -58,6 +59,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(FriendsAdapter.ViewHolder viewHolder, @SuppressLint("RecyclerView") int position) {
+        if (friends == null || friends.isEmpty()) {
+            return; // Avoid null pointer issues
+        }
+
         Friend friend = friends.get(position);
 
         TextView nameTextView = viewHolder.nameTextView;
@@ -117,12 +122,15 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                 friends.remove(position);
                 notifyItemRemoved(position);
                 mainActivity.refreshBirthdayTodayRecyclerView(); // Update the birthday list
+
+                // Notify the adapter of changes to the remaining items
+                notifyItemRangeChanged(position, getItemCount());
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return friends.size();
+        return friends != null ? friends.size() : 0;
     }
 }
