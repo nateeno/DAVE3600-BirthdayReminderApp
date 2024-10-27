@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -13,13 +15,11 @@ public class PermissionRequestActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Check if the permission is already granted
+        
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             // Request the permission
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_REQUEST_CODE);
         } else {
-            // Permission is already granted, finish the activity
             finish();
         }
     }
@@ -28,13 +28,11 @@ public class PermissionRequestActivity extends Activity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            // Permission request result
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, you can now send notifications
+                // Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show();
             } else {
-                // Permission denied, handle accordingly
+                // Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
             }
-            // Finish the activity
             finish();
         }
     }
